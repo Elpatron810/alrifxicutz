@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmad's Barbershop</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:#0d0d0d;
+    color:#f2f2f2;
+  }
+
+  /* ===== HERO / STARTPAGINA ===== */
+  .hero {
+    min-height:100vh;
+    background:
+      linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)),
+      url('hero.jpg') center/cover no-repeat fixed;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+  }
+  .hero .logo {
+    font-size:clamp(2.2rem, 8vw, 4.5rem);
+    font-weight:800;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:#fff;
+    text-shadow:0 4px 20px rgba(0,0,0,.8);
+  }
+  .hero .logo span { color:#d4a24e; }
+  .hero .tagline {
+    margin-top:10px;
+    font-size:clamp(1rem, 3vw, 1.3rem);
+    color:#ddd;
+    letter-spacing:2px;
+  }
+
+  .contact-bar {
+    margin-top:30px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .contact-bar a {
+    background:rgba(212,162,78,.12);
+    border:1px solid #d4a24e;
+    color:#f2d9a4;
+    padding:12px 22px;
+    border-radius:50px;
+    text-decoration:none;
+    font-weight:600;
+    font-size:1rem;
+    transition:.25s;
+  }
+  .contact-bar a:hover {
+    background:#d4a24e;
+    color:#0d0d0d;
+    transform:translateY(-3px);
+  }
+
+  /* ===== STIJLEN KNOPPEN ===== */
+  .styles {
+    margin-top:50px;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .style-btn {
+    width:150px;
+    height:150px;
+    border-radius:20px;
+    border:2px solid rgba(212,162,78,.5);
+    background:rgba(20,20,20,.75);
+    color:#fff;
+    font-size:1.4rem;
+    font-weight:700;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:.25s;
+    backdrop-filter:blur(4px);
+  }
+  .style-btn small {
+    display:block;
+    font-size:.7rem;
+    font-weight:400;
+    letter-spacing:1px;
+    color:#d4a24e;
+    margin-top:6px;
+  }
+  .style-btn:hover {
+    background:#d4a24e;
+    color:#0d0d0d;
+    transform:scale(1.06);
+    box-shadow:0 10px 30px rgba(212,162,78,.35);
+  }
+  .style-btn:hover small { color:#0d0d0d; }
+
+  .scroll-hint {
+    position:absolute;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#999;
+    font-size:.85rem;
+    letter-spacing:2px;
+    animation:bounce 2s infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,8px)} }
+
+  /* ===== GALERIJ ===== */
+  .gallery-section { padding:70px 20px; max-width:1100px; margin:0 auto; }
+  .gallery-section h2 {
+    text-align:center;
+    font-size:2rem;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .gallery-section h2 span { color:#d4a24e; }
+  .gallery-section p.sub {
+    text-align:center;
+    color:#999;
+    margin-bottom:40px;
+  }
+  .gallery-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:20px;
+  }
+  .gallery-grid img {
+    width:100%;
+    border-radius:16px;
+    border:1px solid #2a2a2a;
+    cursor:pointer;
+    transition:.3s;
+  }
+  .gallery-grid img:hover {
+    transform:scale(1.03);
+    border-color:#d4a24e;
+    box-shadow:0 10px 30px rgba(0,0,0,.6);
+  }
+
+  /* ===== LIGHTBOX ===== */
+  .lightbox {
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.92);
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    padding:20px;
+  }
+  .lightbox.open { display:flex; }
+  .lightbox img {
+    max-width:92vw;
+    max-height:80vh;
+    border-radius:12px;
+    border:1px solid #d4a24e;
+  }
+  .lightbox .lb-title {
+    margin-top:16px;
+    font-size:1.3rem;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:#d4a24e;
+  }
+  .lightbox .lb-close, .lightbox .lb-nav {
+    position:absolute;
+    background:rgba(255,255,255,.08);
+    border:1px solid #d4a24e;
+    color:#fff;
+    cursor:pointer;
+    font-size:1.5rem;
+    border-radius:50%;
+    width:50px; height:50px;
+    transition:.2s;
+  }
+  .lightbox .lb-close { top:20px; right:20px; }
+  .lightbox .lb-prev { left:15px; top:50%; transform:translateY(-50%); }
+  .lightbox .lb-next { right:15px; top:50%; transform:translateY(-50%); }
+  .lightbox button:hover { background:#d4a24e; color:#0d0d0d; }
+  .lb-counter { margin-top:10px; color:#888; }
+
+  /* ===== FOOTER / CONTACT ===== */
+  footer {
+    background:#111;
+    border-top:1px solid #2a2a2a;
+    padding:50px 20px;
+    text-align:center;
+  }
+  footer h3 { letter-spacing:3px; text-transform:uppercase; margin-bottom:16px; }
+  footer h3 span { color:#d4a24e; }
+  footer .big {
+    font-size:1.5rem;
+    margin:8px 0;
+  }
+  footer a { color:#d4a24e; text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<!-- STARTPAGINA -->
+<header class="hero" id="home">
+  <div class="logo">Ahmad<span>'s</span> Barbershop</div>
+  <div class="tagline">Taper &bull; Fade &bull; Designs — sharp every time</div>
+
+  <div class="contact-bar">
+    <a href="tel:0493450572">📞 0493 45 05 72</a>
+    <a href="https://snapchat.com/add/ur.onlyahmad" target="_blank">👻 Snapchat: ur.onlyahmad</a>
+    <a href="https://www.google.com/maps/search/?api=1&query=Schoolstraat+3+9570+Lierde" target="_blank">📍 Schoolstraat 3, 9570 Lierde</a>
+  </div>
+
+  <div class="styles">
+    <button class="style-btn" onclick="openGallery('taper')">Taper<small>bekijk knippen</small></button>
+    <button class="style-btn" onclick="openGallery('fade')">Fade<small>bekijk knippen</small></button>
+    <button class="style-btn" onclick="openGallery('designs')">Designs<small>bekijk knippen</small></button>
+  </div>
+
+  <div class="scroll-hint">▼ scroll ▼</div>
+</header>
+
+<!-- GALERIJ -->
+<section class="gallery-section" id="werk">
+  <h2>Ons <span>Werk</span></h2>
+  <p class="sub">Klik op een knop hierboven of op een foto om te vergroten.</p>
+  <div class="gallery-grid">
+    <img src="taper-1.jpg" alt="Taper knip" onclick="openGallery('taper', 0)">
+    <img src="taper-2.jpg" alt="Taper knip" onclick="openGallery('taper', 1)">
+    <img src="fade-1.jpg" alt="Fade knip" onclick="openGallery('fade', 0)">
+    <img src="designs-1.jpg" alt="Design knip" onclick="openGallery('designs', 0)">
+    <img src="designs-2.jpg" alt="Design knip" onclick="openGallery('designs', 1)">
+  </div>
+</section>
+
+<!-- CONTACT -->
+<footer id="contact">
+  <h3>Maak een <span>afspraak</span></h3>
+  <p class="big">📞 <a href="tel:0493450572">0493 45 05 72</a></p>
+  <p class="big">👻 <a href="https://snapchat.com/add/ur.onlyahmad" target="_blank">ur.onlyahmad</a></p>
+  <p class="big">📍 <a href="https://www.google.com/maps/search/?api=1&query=Schoolstraat+3+9570+Lierde" target="_blank">Schoolstraat 3, 9570 Lierde</a></p>
+  <p style="margin-top:20px;color:#777;font-size:.85rem;">&copy; 2026 Ahmad's Barbershop</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeGallery()">✕</button>
+  <button class="lb-nav lb-prev" onclick="nav(-1)">&#10094;</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-title" id="lb-title"></div>
+  <div class="lb-counter" id="lb-counter"></div>
+  <button class="lb-nav lb-next" onclick="nav(1)">&#10095;</button>
+</div>
+
+<script>
+  const galleries = {
+    taper:   { title: "Taper",   photos: ["taper-1.jpg", "taper-2.jpg"] },
+    fade:    { title: "Fade",    photos: ["fade-1.jpg"] },
+    designs: { title: "Designs", photos: ["designs-1.jpg", "designs-2.jpg"] }
+  };
+  let currentGallery = null;
+  let currentIndex = 0;
+
+  function openGallery(name, index = 0) {
+    currentGallery = name;
+    currentIndex = index;
+    render();
+    document.getElementById("lightbox").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeGallery() {
+    document.getElementById("lightbox").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  function nav(step) {
+    const g = galleries[currentGallery];
+    currentIndex = (currentIndex + step + g.photos.length) % g.photos.length;
+    render();
+  }
+  function render() {
+    const g = galleries[currentGallery];
+    document.getElementById("lb-img").src = g.photos[currentIndex];
+    document.getElementById("lb-title").textContent = g.title;
+    document.getElementById("lb-counter").textContent =
+      (currentIndex + 1) + " / " + g.photos.length;
+  }
+  document.getElementById("lightbox").addEventListener("click", function(e) {
+    if (e.target === this) closeGallery();
+  });
+  document.addEventListener("keydown", function(e) {
+    if (!document.getElementById("lightbox").classList.contains("open")) return;
+    if (e.key === "Escape") closeGallery();
+    if (e.key === "ArrowLeft") nav(-1);
+    if (e.key === "ArrowRight") nav(1);
+  });
+</script>
+
+</body>
+</html>
